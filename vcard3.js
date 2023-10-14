@@ -1,6 +1,6 @@
 class Address {
     // All optional
-    type = []  // 'dom'|'intl'|'postal'|'parcel'|'home'|'work'
+    type = ''  // 'dom'|'intl'|'postal'|'parcel'|'home'|'work'
     street = '';
     locality = '';
     region = '';
@@ -17,7 +17,17 @@ class Address {
     }
 
     get addressString() {
-        return 'ADR;TYPE='+this.type.join(',')+':;;'+this.street+';'+this.locality+';'+this.region+';'+this.postal+';'+this.country
+        if(this.type != '' ||
+           this.street != '' ||
+           this.locality != '' ||
+           this.region != '' ||
+           this.postal != '' ||
+           this.country != '') {
+            return 'ADR;TYPE='+this.type+':;;'+this.street+';'+this.locality+';'+this.region+';'+this.postal+';'+this.country
+        } else {
+            return  '';
+        }
+        
     }
 }
 
@@ -64,7 +74,10 @@ class VCard3{
     get addressString() {
         let address = ''
         this.address.forEach(add => {
-            address = address + add.addressString+'\n';
+            address = address + add.addressString;
+            if(add.addressString != '') {
+                address = address + '\n';
+            }
         });
         return address;
     }
@@ -81,7 +94,6 @@ class VCard3{
         this.urlString+'\n'+
         'END:VCARD'
     }
-    // encodeURIComponent
 
     getQR() {
         return 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl='+encodeURIComponent(this.vcardString)
